@@ -9,7 +9,7 @@ _Introduction_
   - Expertise: Data interpretation, experimental design, and cross-functional team coordination
 
 - **Krishiv Potluri** ()
-  - Role: ML, Algorithm Development and Integration Specialist
+  - Role: Machine Learning, Algorithm Development and Integration Specialist
   - Expertise: Biological feature extraction, developing and implementing various algorithms for HUVEC analysis
 
 - **Jennifer Madrigal** ()
