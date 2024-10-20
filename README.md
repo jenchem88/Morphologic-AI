@@ -43,6 +43,7 @@ Feature Mapping: Our innovative approach maps the extracted features against Rec
 Drug Clustering: We utilize the morphological effects of 1500+ small molecules to perform high-dimensional clustering of drugs.
 
 _Results & Demo_
+
 [Note: Include screenshots, graphs, or links to interactive demos here-- maybe the video as well]
 Our current results focus on the analysis of EGFR-specific drug effects on HUVEC cells. We've developed a pipeline that:
 
@@ -53,13 +54,14 @@ Visualizes drug clustering based on morphological effects
 
 [Include a walkthrough of key features or functionality here]
 
-Interpretation -- 
+_Interpretation_ 
 
 Our results demonstrate that explainable, biologically relevant features can be extracted from cellular images and meaningfully compared to unsupervised machine learning embeddings. This approach connects black-box AI predictions and human-interpretable biological insights.
 The analysis of EGFR-specific drug effects provides a deeper understanding of how these drugs impact HUVEC cell morphology, potentially revealing new insights into their mechanisms of action and off-target effects.
 
 _Potential Impact_
-If fully realized, our project could have far-reaching implications:
+
+If fully realized, our project could have many far-reaching implications:
 
 Accelerated drug discovery: By providing more interpretable data on drug effects at the cellular level, we can speed up the process of identifying promising drug candidates and repurposing existing drugs.
 Improved understanding of disease mechanisms: Our approach could reveal new insights into how diseases affect cell morphology, leading to new therapeutic targets.
@@ -74,10 +76,10 @@ Integrate CLEM imaging to predict finer subcellular structures
 Develop more sophisticated AI models that combine interpretable features with unsupervised learning for enhanced predictive power
 Collaborate with pharmaceutical companies to apply our methods in real-world drug discovery pipelines
 
-_Contributing_
+_Contribution_
+
 We welcome contributions from the Bio x ML scientific community. 
 
-#License
-
 _Acknowledgments_
+
 We would like to thank Recursion Pharmaceuticals for providing the datasets used in this project, as well as Lux Capital for hosting this project.
