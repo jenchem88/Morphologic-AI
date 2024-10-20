@@ -112,4 +112,4 @@ We welcome contributions from the Bio x ML scientific community.
 
 _Acknowledgments_
 
-We would like to thank Recursion Pharmaceuticals for providing the datasets used in this project, as well as Lux Capital for hosting this project.
+We would like to thank Recursion Pharmaceuticals for providing the datasets used in this project,ENVEDA, Polaris, ESM3, Ginkgo, Modal, AWS, RunPod, DigitalOcean as well as Lux Capital for hosting this project.
