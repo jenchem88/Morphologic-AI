@@ -7,7 +7,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
 
 ## Meet Our Team
 
-- **Trevor McKee** (tdmckee)
+- **Trevor McKee (PhD)** (tdmckee)
   - Role: Project Coordinator and Data Analysis Lead 
   - Expertise: Data interpretation, experimental design, and cross-functional team coordination
 
