@@ -27,6 +27,9 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
   - Role: Image Processing and Segmentation Expert
   - Expertise: Cell segmentation algorithms, high-performance computing, and data pipeline optimization
 
+- Leonardo Juárez Zucco (Lordleojz)
+  - Role: Bioinformatics and Biological Data processing Specialist
+  - Expertise: Bioinformatics, Massive Data processing and Biological Data analysis
 
 
 _Project Scope_
