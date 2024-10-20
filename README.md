@@ -15,7 +15,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
   - Role: Machine Learning, Algorithm Development and Integration Specialist
   - Expertise: Biological feature extraction, developing and implementing various algorithms for HUVEC analysis
 
-- **Jennifer Madrigal** ()
+- **Jennifer Madrigal** (jenchem88)
   - Role: Bioinformatics and Data Integration Specialist
   - Expertise: Image data pre-processing, feature classification, and biological feature extraction
 
