@@ -1,0 +1,264 @@
+#some insights:
+# Replace the placeholder paths ('path/to/...') with the actual paths to your data.
+# Adjust the metadata['morphological_pattern'] column name if metadata uses a different column name for the labels.
+
+import os
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import matplotlib.pyplot as plt
+import seaborn as sns
+from lime import lime_image
+from skimage.segmentation import mark_boundaries
+
+# Set random seed for reproducibility
+np.random.seed(42)
+tf.random.set_seed(42)
+
+def load_and_preprocess_data(golgi_dir, actin_dir, metadata_file):
+    """
+    Load and preprocess image data and metadata
+    """
+    metadata = pd.read_csv(metadata_file)
+    
+    golgi_images = []
+    actin_images = []
+    for index, row in metadata.iterrows():
+        golgi_img = tf.keras.preprocessing.image.load_img(
+            os.path.join(golgi_dir, row['golgi_image']),
+            color_mode='grayscale',
+            target_size=(224, 224)
+        )
+        actin_img = tf.keras.preprocessing.image.load_img(
+            os.path.join(actin_dir, row['actin_image']),
+            color_mode='grayscale',
+            target_size=(224, 224)
+        )
+        golgi_images.append(tf.keras.preprocessing.image.img_to_array(golgi_img))
+        actin_images.append(tf.keras.preprocessing.image.img_to_array(actin_img))
+    
+    golgi_images = np.array(golgi_images) / 255.0
+    actin_images = np.array(actin_images) / 255.0
+    
+    return golgi_images, actin_images, metadata
+
+def create_model(num_classes):
+    """
+    Create a dual-input model for Golgi and actin image analysis
+    """
+    golgi_input = layers.Input(shape=(224, 224, 1))
+    actin_input = layers.Input(shape=(224, 224, 1))
+    
+    # Golgi branch
+    golgi_x = layers.Conv2D(32, 3, activation='relu')(golgi_input)
+    golgi_x = layers.MaxPooling2D()(golgi_x)
+    golgi_x = layers.Conv2D(64, 3, activation='relu')(golgi_x)
+    golgi_x = layers.MaxPooling2D()(golgi_x)
+    golgi_x = layers.Flatten()(golgi_x)
+    
+    # Actin branch
+    actin_x = layers.Conv2D(32, 3, activation='relu')(actin_input)
+    actin_x = layers.MaxPooling2D()(actin_x)
+    actin_x = layers.Conv2D(64, 3, activation='relu')(actin_x)
+    actin_x = layers.MaxPooling2D()(actin_x)
+    actin_x = layers.Flatten()(actin_x)
+    
+    # Combine branches
+    combined = layers.concatenate([golgi_x, actin_x])
+    x = layers.Dense(128, activation='relu')(combined)
+    x = layers.Dropout(0.5)(x)
+    x = layers.Dense(64, activation='relu')(x)
+    output = layers.Dense(num_classes, activation='softmax')(x)
+    
+    model = models.Model(inputs=[golgi_input, actin_input], outputs=output)
+    return model
+
+def train_model(model, golgi_train, actin_train, labels_train, golgi_val, actin_val, labels_val, epochs=50, batch_size=32):
+    """
+    Train the model
+    """
+    model.compile(optimizer='adam',
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy'])
+
+    # Data augmentation
+    datagen = ImageDataGenerator(
+        rotation_range=20,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        horizontal_flip=True
+    )
+
+    # Train the model
+    history = model.fit(
+        [golgi_train, actin_train], labels_train,
+        epochs=epochs,
+        batch_size=batch_size,
+        validation_data=([golgi_val, actin_val], labels_val),
+        callbacks=[
+            tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True),
+            tf.keras.callbacks.ReduceLROnPlateau(factor=0.2, patience=5)
+        ]
+    )
+
+    return model, history
+
+def evaluate_model(model, golgi_test, actin_test, labels_test, class_names):
+    predictions = model.predict([golgi_test, actin_test])
+    predicted_classes = np.argmax(predictions, axis=1)
+    true_classes = np.argmax(labels_test, axis=1)
+
+    # Classification report
+    print("Classification Report:")
+    print(classification_report(true_classes, predicted_classes, target_names=class_names))
+
+    # Confusion matrix
+    cm = confusion_matrix(true_classes, predicted_classes)
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.savefig('confusion_matrix.png')
+    plt.close()
+
+def visualize_features(model, golgi_image, actin_image):
+    # Get the output of the last convolutional layer
+    last_conv_layer = model.get_layer('conv2d_2')
+    feature_model = models.Model(inputs=model.inputs, outputs=last_conv_layer.output)
+
+    # Get feature maps
+    feature_maps = feature_model.predict([np.expand_dims(golgi_image, axis=0), np.expand_dims(actin_image, axis=0)])
+
+    # Plot feature maps
+    fig, axes = plt.subplots(4, 4, figsize=(15, 15))
+    for i, ax in enumerate(axes.flat):
+        if i < feature_maps.shape[-1]:
+            ax.imshow(feature_maps[0, :, :, i], cmap='viridis')
+            ax.axis('off')
+        else:
+            ax.remove()
+    plt.suptitle('Feature Maps from Last Convolutional Layer')
+    plt.tight_layout()
+    plt.savefig('feature_maps.png')
+    plt.close()
+
+def explain_prediction(model, golgi_image, actin_image, class_names):
+    explainer = lime_image.LimeImageExplainer()
+    explanation = explainer.explain_instance(
+        np.concatenate([golgi_image, actin_image], axis=-1),
+        lambda x: model.predict([x[:, :, :1], x[:, :, 1:]]),
+        top_labels=5,
+        hide_color=0,
+        num_samples=1000
+    )
+
+    # Get the top prediction
+    top_pred = explanation.top_labels[0]
+
+    # Generate the heatmap
+    temp, mask = explanation.get_image_and_mask(top_pred, positive_only=True, num_features=10, hide_rest=True)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    plt.title(f'Explanation for class {class_names[top_pred]}')
+    plt.axis('off')
+    plt.savefig('lime_explanation.png')
+    plt.close()
+
+def apply_to_new_data(model, new_golgi_images, new_actin_images, class_names):
+    predictions = model.predict([new_golgi_images, new_actin_images])
+    predicted_classes = np.argmax(predictions, axis=1)
+
+    for i, (golgi, actin, pred) in enumerate(zip(new_golgi_images, new_actin_images, predicted_classes)):
+        plt.figure(figsize=(12, 4))
+        plt.subplot(131)
+        plt.imshow(golgi.squeeze(), cmap='gray')
+        plt.title('Golgi')
+        plt.axis('off')
+        
+        plt.subplot(132)
+        plt.imshow(actin.squeeze(), cmap='gray')
+        plt.title('Actin')
+        plt.axis('off')
+        
+        plt.subplot(133)
+        plt.bar(class_names, predictions[i])
+        plt.title(f'Predicted: {class_names[pred]}')
+        plt.xticks(rotation=45, ha='right')
+        
+        plt.tight_layout()
+        plt.savefig(f'new_data_prediction_{i}.png')
+        plt.close()
+
+def main():
+    # Load and preprocess data
+    golgi_dir = 'path/to/golgi/images'
+    actin_dir = 'path/to/actin/images'
+    metadata_file = 'path/to/metadata.csv'
+    golgi_images, actin_images, metadata = load_and_preprocess_data(golgi_dir, actin_dir, metadata_file)
+
+    labels = pd.get_dummies(metadata['morphological_pattern']).values
+    class_names = metadata['morphological_pattern'].unique()
+    num_classes = len(class_names)
+
+    # Split data into train, validation, and test sets
+    golgi_train_val, golgi_test, actin_train_val, actin_test, labels_train_val, labels_test = train_test_split(
+        golgi_images, actin_images, labels, test_size=0.2, random_state=42
+    )
+    golgi_train, golgi_val, actin_train, actin_val, labels_train, labels_val = train_test_split(
+        golgi_train_val, actin_train_val, labels_train_val, test_size=0.2, random_state=42
+    )
+
+    # Create and train the model
+    model = create_model(num_classes)
+    trained_model, history = train_model(model, golgi_train, actin_train, labels_train, 
+                                         golgi_val, actin_val, labels_val)
+
+    trained_model.save('golgi_actin_morphology_model.h5')
+
+    # Plot training history
+    plt.figure(figsize=(12, 4))
+    plt.subplot(121)
+    plt.plot(history.history['accuracy'], label='Training Accuracy')
+    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    plt.title('Model Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+
+    plt.subplot(122)
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Model Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig('training_history.png')
+    plt.close()
+
+    # Evaluate the model
+    evaluate_model(trained_model, golgi_test, actin_test, labels_test, class_names)
+
+    # Visualize features
+    sample_golgi = golgi_test[0]
+    sample_actin = actin_test[0]
+    visualize_features(trained_model, sample_golgi, sample_actin)
+
+    # Explain predictions
+    explain_prediction(trained_model, sample_golgi, sample_actin, class_names)
+
+    # Apply to new data (using test data as an example)
+    apply_to_new_data(trained_model, golgi_test[:5], actin_test[:5], class_names)
+
+    print("Analysis complete. Check output files for results.")
+
+if __name__ == '__main__':
+    main()
