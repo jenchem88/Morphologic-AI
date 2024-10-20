@@ -1,8 +1,11 @@
 # Morphologic-AI
 
 Morphologic AI
+## Introduction
 
-_Introduction_
+Welcome to the Morphologic AI project, where we're bridging the gap between high-content cellular imaging and interpretable machine learning for accelerated drug discovery. Our diverse, international team brings together expertise from various fields to tackle the complex challenges of decoding cellular responses to drug treatments and genetic perturbations.
+
+## Meet Our Team
 
 - **Trevor McKee** ()
   - Role: Project Coordinator and Data Analysis Lead 
