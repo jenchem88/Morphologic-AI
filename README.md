@@ -17,7 +17,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
 
 - **Jennifer Madrigal** ()
   - Role: Bioinformatics and Data Integration Specialist
-  - Expertise: Image data processing, image feature classification, data preprocessing, and biological feature extraction
+  - Expertise: Image data pre-processing, feature classification, and biological feature extraction
 
 - **Arudhir Singh** ()
   - Role: Machine Learning and Cloud Infrastructure Lead
