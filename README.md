@@ -3,6 +3,7 @@
 Morphologic AI
 
 _Project Scope_
+
 Morphologic AI is an innovative project that leverages spatial information embedded in cellular images to gain insights into cell health and functionality in response to various challenges. Our focus is on analyzing Human Umbilical Vein Endothelial Cells (HUVECs) and their morphological changes in response to infectious agents and drug treatments. By utilizing fluorescent markers (Hoechst DNA, ConA, Phalloidin, Syto14, and WGA) and advanced computer vision-based segmentation approaches, we aim to measure changes in cellular morphology to identify drug-infectious disease interactions in the RxRx19a and b datasets. Our goal is to develop an automated, scalable solution for analyzing high-throughput microscopic images of HUVEC cells infected by pathogens and impacted by whole-genome CRISPR screens. This approach could potentially identify drugs that restore "normal" HUVEC morphology, presenting candidates for drug repurposing in infectious disease treatment.
 
 _Impact_
