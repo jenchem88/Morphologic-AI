@@ -7,11 +7,11 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
 
 ## Meet Our Team
 
-- **Trevor McKee** ()
+- **Trevor McKee** (tdmckee)
   - Role: Project Coordinator and Data Analysis Lead 
   - Expertise: Data interpretation, experimental design, and cross-functional team coordination
 
-- **Krishiv Potluri** ()
+- **Krishiv Potluri** (kishpish)
   - Role: Machine Learning, Algorithm Development and Integration Specialist
   - Expertise: Biological feature extraction, developing and implementing various algorithms for HUVEC analysis
 
