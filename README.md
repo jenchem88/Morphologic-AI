@@ -34,7 +34,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
   - Expertise: Bioinformatics, Massive Data processing and Biological Data analysis
 
 - **Sai Ravella** ()
-  - Role: Applied machine learning
+  - Role: Applied machine learning, SMILES embedding Specialist
   - Expertise: AI and transformer ML models
 
 
