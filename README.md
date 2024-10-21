@@ -14,7 +14,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
   - Expertise: Data interpretation, experimental design, and cross-functional team coordination
 
 - **Krishiv Potluri** (kishpish)
-  - Role: Machine Learning, Algorithm Development and Integration Specialist
+  - Role: Machine Learning, Cell Segmentation, Algorithm Development and Integration Specialist
   - Expertise: Biological feature extraction, developing and implementing various algorithms for HUVEC analysis
 
 - **Jennifer Madrigal (PhD)** (jenchem88)
