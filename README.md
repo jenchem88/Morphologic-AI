@@ -76,7 +76,8 @@ Drug Clustering: We utilize the morphological effects of 1500+ small molecules t
 
 _Results & Demo_
 
-[Note: Include screenshots, graphs, or links to interactive demos here-- maybe the video as well]
+https://www.youtube.com/watch?v=A6Y1BBzHO-U
+
 Our current results focus on the analysis of EGFR-specific drug effects on HUVEC cells. We've developed a pipeline that:
 
 Segments individual cells from multi-cell images
@@ -84,7 +85,7 @@ Extracts and quantifies key morphological features
 Maps these features against Recursion's embeddings
 Visualizes drug clustering based on morphological effects
 
-[Include a walkthrough of key features or functionality here]
+[walkthrough of key features or functionality here]
 
 _Interpretation_ 
 
