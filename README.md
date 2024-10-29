@@ -37,7 +37,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
   - Role: Applied machine learning, SMILES embedding Specialist
   - Expertise: AI and transformer ML models
 
-- **Geoff Boocobo (MD)** ()
+- **Geoff Bocobo (MD)** ()
   - Role: Biomedical, Clinical, and Commercial Lead
   - Expertise: Translational insights, clinical implications, and commercialization potential
 
