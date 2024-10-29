@@ -38,7 +38,7 @@ Welcome to the Morphologic AI project, where we're bridging the gap between high
   - Expertise: AI and transformer ML models
 
 - **Geoff Boocobo (MD)** ()
-  - Role: Biomedical, Clinical, and Commercial lead
+  - Role: Biomedical, Clinical, and Commercial Lead
   - Expertise: Translational insights, clinical implications, and commercialization potential
 
 
